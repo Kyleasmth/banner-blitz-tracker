@@ -91,20 +91,31 @@ export const GameProvider = ({ children }) => {
     let bottomPositions = shuffleArray(
       generateTeamPositions(teamMembers, "bottom")
     );
-    const randomizedTurnOrder = interleaveTeamsAvoidingSameClass(
+    let randomizedTurnOrder = interleaveTeamsAvoidingSameClass(
       topPositions,
       bottomPositions
     );
-    setTurnOrder(randomizedTurnOrder);
-    setCurrentTurnIndex(0);
-    console.log("randomizedTurnOrder[0]", randomizedTurnOrder[0]);
+
+    // Ensure there's at least one player and assign 2 tokens to the first player
     if (randomizedTurnOrder.length > 0) {
+      randomizedTurnOrder = randomizedTurnOrder.map((player, index) => {
+        if (index === 0) {
+          // First player in the order
+          return { ...player, tokens: 2 }; // Assign 2 tokens
+        }
+        return player;
+      });
+
+      // Adjust team points based on the team of the first player
       if (randomizedTurnOrder[0].team === "Top") {
-        setTopTeamPoints(6); // Set top team points to 6 if the first player is from the top team
+        setTopTeamPoints(6);
       } else {
-        setBottomTeamPoints(6); // Set bottom team points to 6 if the first player is from the bottom team
+        setBottomTeamPoints(6);
       }
     }
+
+    setTurnOrder(randomizedTurnOrder);
+    setCurrentTurnIndex(0);
   };
 
   const updatePlayerNotes = (name: string, team: string, notes: string) => {
@@ -124,11 +135,25 @@ export const GameProvider = ({ children }) => {
     delta: number
   ) => {
     setTurnOrder((currentTurnOrder) =>
-      currentTurnOrder.map((player) =>
-        player.name === name && player.team === team
-          ? { ...player, [stat]: player[stat] + delta }
-          : player
-      )
+      currentTurnOrder.map((player) => {
+        if (player.name === name && player.team === team) {
+          // Update the player's stat
+          const updatedPlayer = { ...player, [stat]: player[stat] + delta };
+
+          // If the stat is "tokens" and delta is positive, increase the team score
+          if (stat === "tokens" && delta > 0) {
+            if (team === "Top") {
+              setTopTeamPoints((prevPoints) => prevPoints + delta);
+            } else if (team === "Bottom") {
+              setBottomTeamPoints((prevPoints) => prevPoints + delta);
+            }
+          }
+
+          // No decrease in team score if tokens are reduced
+          return updatedPlayer;
+        }
+        return player;
+      })
     );
   };
 
@@ -195,7 +220,7 @@ export const GameProvider = ({ children }) => {
 
   const resetGame = () => {
     // Clear local storage
-    // localStorage.removeItem("teamMembers");
+    localStorage.removeItem("teamMembers");
     localStorage.removeItem("isTurnTrackerVisible");
     localStorage.removeItem("turnOrder");
     localStorage.removeItem("currentTurnIndex");
@@ -204,8 +229,20 @@ export const GameProvider = ({ children }) => {
 
     // Reset state
     setTeamMembers({
-      top: { Warrior: "", Rogue: "", Mage: "", Ranger: "", Cleric: "" },
-      bottom: { Warrior: "", Rogue: "", Mage: "", Ranger: "", Cleric: "" },
+      top: {
+        Warrior: "Kyle",
+        Rogue: "Colin",
+        Mage: "Kyle",
+        Ranger: "EJ",
+        Cleric: "",
+      },
+      bottom: {
+        Warrior: "Asa",
+        Rogue: "Sean",
+        Mage: "Nick",
+        Ranger: "Bucca",
+        Cleric: "",
+      },
     });
     setIsTurnTrackerVisible(false);
     setTurnOrder([]);

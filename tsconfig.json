@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "gamecontext/GameContext.tsx"],
+  "include": ["src", "gamecontext/GameContext.tsx", "./setupTest.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
