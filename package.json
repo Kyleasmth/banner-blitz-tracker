@@ -30,7 +30,10 @@
     "vite": "^5.2.0"
   },
   "scripts": {
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "dev": "vite",
+    "build": "vite build",
+    "test": "jest --config jest.config.js",
+    "preview": "vite preview",
+    "lint-fix": "eslint --fix --ext .js,.jsx src"
   }
 }

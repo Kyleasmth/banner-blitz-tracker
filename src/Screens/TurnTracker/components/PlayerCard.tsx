@@ -34,9 +34,12 @@ const PlayerCard = ({
   //   setAnchorEl(null);
   // };
 
-  const renderStatField = (statName, statValue) => (
+  const renderStatField = (statName: string, statValue: number) => (
     <div key={statName} style={{ display: "flex", alignItems: "center" }}>
-      <Typography variant="body2" sx={{ fontWeight: "bold", margin: "0 10px" }}>
+      <Typography
+        variant="body1"
+        sx={{ fontSize: "24px", fontWeight: "bold", margin: "0 20px" }}
+      >
         {statName}: {statValue}
       </Typography>
       <IconButton
@@ -56,12 +59,12 @@ const PlayerCard = ({
 
   return (
     <Badge
-      color="success"
+      color="secondary"
       overlap="circular"
       variant="dot"
       invisible={!currentTurnIndex}
       anchorOrigin={{
-        vertical: "bottom",
+        vertical: "top",
         horizontal: "right",
       }}
       sx={{
@@ -111,6 +114,20 @@ const PlayerCard = ({
             fullWidth
             multiline
             rows={3}
+            sx={{
+              backgroundColor: "white", // Set background color to white
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "black", // Optional: Change the border color to black
+                },
+                "&:hover fieldset": {
+                  borderColor: "gray", // Optional: Change the border color on hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: classColors[player.role], // Optional: Change the border color when the text field is focused
+                },
+              },
+            }}
           />
 
           {/* <Button

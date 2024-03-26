@@ -1,8 +1,11 @@
 import React from "react";
 import { useGame } from "../../../gamecontext/GameContext";
-import { Grid, Button, Typography } from "@mui/material";
+import { Grid, Button, Typography, IconButton } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 import PlayerCard from "./components/PlayerCard";
+
 const TurnTracker: React.FC = () => {
   const {
     turnOrder,
@@ -12,6 +15,7 @@ const TurnTracker: React.FC = () => {
     topTeamPoints,
     bottomTeamPoints,
     handleNextTurn,
+    handleTeamPointsChange,
     updatePlayerNotes,
     handleInsertNPC,
   } = useGame();
@@ -49,11 +53,34 @@ const TurnTracker: React.FC = () => {
         </Button>
         <Typography variant="h6" gutterBottom>
           Top Team Points: {topTeamPoints}
+          <IconButton
+            onClick={() => handleTeamPointsChange("top", 1)}
+            sx={{ color: "black" }}
+          >
+            <AddCircleOutlineIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleTeamPointsChange("top", -1)}
+            sx={{ color: "black" }}
+          >
+            <RemoveCircleOutlineIcon />
+          </IconButton>
         </Typography>
         <Typography variant="h6" gutterBottom>
           Bottom Team Points: {bottomTeamPoints}
+          <IconButton
+            onClick={() => handleTeamPointsChange("bottom", 1)}
+            sx={{ color: "black" }}
+          >
+            <AddCircleOutlineIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleTeamPointsChange("bottom", -1)}
+            sx={{ color: "black" }}
+          >
+            <RemoveCircleOutlineIcon />
+          </IconButton>
         </Typography>
-        {/* Points adjustment buttons */}
       </div>
     </div>
   );
