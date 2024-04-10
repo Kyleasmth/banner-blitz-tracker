@@ -45,4 +45,5 @@ export interface Player {
   playerNotes: string;
   tokens: number;
   type: "Player" | "NPC";
+  id: number;
 }

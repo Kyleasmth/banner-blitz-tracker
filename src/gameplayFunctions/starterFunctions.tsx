@@ -32,6 +32,7 @@ export const generateTeamPositions = (
         decreasedTurnRoll: 0,
         tokens: 1,
         type: "Player",
+        id: Math.floor(Math.random() * 1000000),
       };
     });
 };

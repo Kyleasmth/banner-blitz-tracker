@@ -16,7 +16,7 @@ import { classColors, npcOptions } from "../../../typesAndConstants";
 
 const PlayerCard = ({
   player,
-  handleStatChange,
+  updateStat,
   updatePlayerNotes,
   handleInsertNPC,
   currentTurnIndex,
@@ -34,28 +34,31 @@ const PlayerCard = ({
   //   setAnchorEl(null);
   // };
 
-  const renderStatField = (statName: string, statValue: number) => (
-    <div key={statName} style={{ display: "flex", alignItems: "center" }}>
-      <Typography
-        variant="body1"
-        sx={{ fontSize: "24px", fontWeight: "bold", margin: "0 20px" }}
-      >
-        {statName}: {statValue}
-      </Typography>
-      <IconButton
-        onClick={() => handleStatChange(player.name, player.team, statName, -1)}
-        sx={{ color: "black" }}
-      >
-        <RemoveCircleOutlineIcon />
-      </IconButton>
-      <IconButton
-        onClick={() => handleStatChange(player.name, player.team, statName, 1)}
-        sx={{ color: "black" }}
-      >
-        <AddCircleOutlineIcon />
-      </IconButton>
-    </div>
-  );
+  const renderStatField = (statName: string, statValue: number) => {
+    if (statName === "id") return null;
+    return (
+      <div key={statName} style={{ display: "flex", alignItems: "center" }}>
+        <Typography
+          variant="body1"
+          sx={{ fontSize: "24px", fontWeight: "bold", margin: "0 20px" }}
+        >
+          {statName}: {statValue}
+        </Typography>
+        <IconButton
+          onClick={() => updateStat(player, statName, -1)}
+          sx={{ color: "black" }}
+        >
+          <RemoveCircleOutlineIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => updateStat(player, statName, 1)}
+          sx={{ color: "black" }}
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
+      </div>
+    );
+  };
 
   return (
     <Badge
@@ -103,13 +106,18 @@ const PlayerCard = ({
                 typeof player[key] === "number" && key !== "x" && key !== "y"
             )
             .map((stat) => renderStatField(stat, player[stat]))}
+          <Button
+            onClick={() => updateStat(player, "tokens", 3)}
+            variant="contained"
+            sx={{ mr: 2 }}
+          >
+            Record player kill
+          </Button>
           <TextField
             label="Notes"
             variant="outlined"
             value={player.playerNotes}
-            onChange={(e) =>
-              updatePlayerNotes(player.name, player.team, e.target.value)
-            }
+            onChange={(e) => updatePlayerNotes(player, e.target.value)}
             style={{ marginTop: "10px" }}
             fullWidth
             multiline

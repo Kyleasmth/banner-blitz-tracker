@@ -118,29 +118,24 @@ export const GameProvider = ({ children }) => {
     setCurrentTurnIndex(0);
   };
 
-  const updatePlayerNotes = (name: string, team: string, notes: string) => {
+  const updatePlayerNotes = (selectedPlayer: Player, notes: string) => {
+    const { id, team } = selectedPlayer;
     setTurnOrder((currentTurnOrder) =>
       currentTurnOrder.map((player) =>
-        player.name === name && player.team === team
+        player.id === id && player.team === team
           ? { ...player, playerNotes: notes }
           : player
       )
     );
   };
 
-  const updateStat = (
-    name: string,
-    team: string,
-    stat: string,
-    delta: number
-  ) => {
+  const updateStat = (selectedPlayer: Player, stat: string, delta: number) => {
+    const { id, team } = selectedPlayer;
     setTurnOrder((currentTurnOrder) =>
       currentTurnOrder.map((player) => {
-        if (player.name === name && player.team === team) {
-          // Update the player's stat
+        if (player.id === id && player.team === team) {
           const updatedPlayer = { ...player, [stat]: player[stat] + delta };
 
-          // If the stat is "tokens" and delta is positive, increase the team score
           if (stat === "tokens" && delta > 0) {
             if (team === "Top") {
               setTopTeamPoints((prevPoints) => prevPoints + delta);

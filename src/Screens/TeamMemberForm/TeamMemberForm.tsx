@@ -1,5 +1,16 @@
 import React from "react";
-import { Box, Button, Grid, Typography, Container } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Typography,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { useGame } from "../../../gamecontext/GameContext";
 import TeamTextField from "./components/TeamTextField";
 import TeamPositions from "./components/TeamPositions";
@@ -16,13 +27,62 @@ const TeamMemberForm: React.FC = () => {
     resetGame,
   } = useGame();
 
+  const [dialog, setDialog] = React.useState({
+    open: false,
+    type: "", // 'generate' or 'reset'
+  });
+
+  const [openResetDialog, setOpenResetDialog] = React.useState(false);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    generatePositions();
+    // generatePositions();
+    handleOpenDialog();
+  };
+
+  const openDialog = (type) => {
+    setDialog({
+      open: true,
+      type,
+    });
+  };
+
+  const closeDialog = () => {
+    setDialog((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleConfirm = () => {
+    if (dialog.type === "generate") {
+      generatePositions();
+    } else if (dialog.type === "reset") {
+      resetGame();
+    }
+    closeDialog();
   };
 
   return (
     <Container maxWidth="sm">
+      <Dialog open={dialog.open} onClose={closeDialog}>
+        <DialogTitle>
+          Confirm {dialog.type === "generate" ? "Generation" : "Reset"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to{" "}
+            {dialog.type === "generate"
+              ? "generate team positions"
+              : "reset the game"}
+            ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Cancel</Button>
+          <Button onClick={handleConfirm} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Box
         onSubmit={handleSubmit}
         component="form"
@@ -55,12 +115,25 @@ const TeamMemberForm: React.FC = () => {
             </Grid>
           </Grid>
         ))}
-        <Button type="submit" variant="contained" sx={{ mt: 5 }}>
+        <Button onClick={toggleTracker} variant="contained" sx={{ mt: 3 }}>
+          Go to turn tracker
+        </Button>
+        <Button
+          type="button"
+          variant="contained"
+          sx={{ mt: 5 }}
+          onClick={() => openDialog("generate")}
+        >
           Generate Team Positions
         </Button>
-        <Button onClick={resetGame} variant="contained" sx={{ mt: 5 }}>
-          Reset game
+        <Button
+          onClick={() => openDialog("reset")}
+          variant="contained"
+          sx={{ mt: 5 }}
+        >
+          Reset Game
         </Button>
+
         <TeamPositions team="Top" turnOrder={turnOrder} />
         <TeamPositions team="Bottom" turnOrder={turnOrder} />
         <TurnOrder turnOrder={turnOrder} />
